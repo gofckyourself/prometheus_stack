@@ -4,6 +4,14 @@ scrape_configs:
     static_configs:
     - targets: ['node-exporter:9100']
 
+ - job_name: "HV1"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["10.10.55.11:5000"]
+
 rule_files:
   - 'alert.rules'
 
