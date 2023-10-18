@@ -3,14 +3,10 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
     - targets: ['node-exporter:9100']
-
- - job_name: "HV1"
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
+  - job_name: HV1
+    scrape_interval: 5s
     static_configs:
-      - targets: ["10.10.55.11:5000"]
+    - targets: ['10.10.55.11:5000']
 
 rule_files:
   - 'alert.rules'
