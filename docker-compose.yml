@@ -57,45 +57,75 @@ services:
     networks:
       - default
 
-  alertmanager-bot:
-    command:
-      - --alertmanager.url=http://alertmanager:9093
-      - --log.level=info
-      - --store=bolt
-      - --bolt.path=/data/bot.db
-      - --telegram.admin=573454381
-      - --telegram.token=6386467506:AAFEsORElAGLXMwOuMFM1ZnU4do1LTk9yXQ
-    image: metalmatze/alertmanager-bot:0.4.3
-    user: root
-    ports:
-      - 8080:8080
-    container_name: alertmanager-bot
-    hostname: alertmanager-bot
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:latest
+    container_name: zabbix-server
+    depends_on:
+     - mysql
     environment:
-      TZ: "Europe/Moscow"
-    restart: unless-stopped
+      TZ: Asia/Shanghai
+      DB_SERVER_HOST: "mysql"
+      MYSQL_DATABASE: "zabbix"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: ${ZABBIX_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ZABBIX_MYSQL_PASSWORD_ROOT}
+    ports:
+     - "10051:10051"
     volumes:
-      - ./data:/data
+     - /etc/localtime:/etc/localtime:ro
+    links:
+     - mysql:zabbix-mysql
+    user: root
     networks:
       - default
+    restart: always
+  
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:latest
+    container_name: zabbix-web
+    depends_on:
+     - mysql
+     - server
+    environment:
+      TZ: Asia/Shanghai
+      DB_SERVER_HOST: "mysql"
+      ZBX_SERVER_HOST: "server"
+      MYSQL_DATABASE: "zabbix"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: ${ZABBIX_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ZABBIX_MYSQL_PASSWORD_ROOT}  
+    volumes:
+     - ./zabbix/graphfont.ttf:/usr/share/zabbix/fonts/graphfont.ttf
+     - /etc/localtime:/etc/localtime:ro
+    
+    links:
+      - mysql:zabbix-mysql
+      - server:zabbix-server
+    ports:
+     - "80:80"
+    user: root
+    networks:
+      - default
+    restart: always 
 
-  alertmanager:
-    image: prom/alertmanager:v0.21.0
-    user: root
-    ports:
-      - 127.0.0.1:9093:9093
-    volumes:
-      - ./alertmanager/:/etc/alertmanager/
-    container_name: alertmanager
-    hostname: alertmanager
+  mysql:
+    image: mysql:5.7
+    container_name: zabbix-mysql
+    command: --character-set-server=utf8 --collation-server=utf8_general_ci
     environment:
-      TZ: "Europe/Moscow"
-    restart: unless-stopped
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/etc/alertmanager/data'
+      TZ: Asia/Shanghai
+      MYSQL_DATABASE: "zabbix"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: ${ZABBIX_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ZABBIX_MYSQL_PASSWORD_ROOT}     
     networks:
       - default
+    volumes:
+     - /home/data/zabbix/database/mysql:/var/lib/mysql
+     - /etc/localtime:/etc/localtime:ro
+    restart: always
+
+
 
 networks:
   default:
