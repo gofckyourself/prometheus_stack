@@ -73,8 +73,6 @@ services:
      - "10051:10051"
     volumes:
      - /etc/localtime:/etc/localtime:ro
-    links:
-     - mysql:zabbix-mysql
     user: root
     networks:
       - default
@@ -98,9 +96,6 @@ services:
      - ./zabbix/graphfont.ttf:/usr/share/zabbix/fonts/graphfont.ttf
      - /etc/localtime:/etc/localtime:ro
     
-    links:
-      - mysql:zabbix-mysql
-      - zabbix-server:zabbix-server
     ports:
      - "80:8080"
     user: root
