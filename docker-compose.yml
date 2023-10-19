@@ -100,7 +100,7 @@ services:
     
     links:
       - mysql:zabbix-mysql
-      - server:zabbix-server
+      - zabbix-server:zabbix-server
     ports:
      - "80:80"
     user: root
