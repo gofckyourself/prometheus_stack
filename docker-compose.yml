@@ -85,7 +85,7 @@ services:
     container_name: zabbix-web
     depends_on:
      - mysql
-     - server
+     - zabbix-server
     environment:
       TZ: Asia/Shanghai
       DB_SERVER_HOST: "mysql"
