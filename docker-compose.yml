@@ -121,7 +121,7 @@ services:
     networks:
       - default
     volumes:
-     - /home/data/zabbix/database/mysql:/var/lib/mysql
+     - ./zabbix/database/mysql:/var/lib/mysql
      - /etc/localtime:/etc/localtime:ro
     restart: always
 
