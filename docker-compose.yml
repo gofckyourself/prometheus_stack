@@ -89,7 +89,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       DB_SERVER_HOST: "mysql"
-      ZBX_SERVER_HOST: "server"
+      ZBX_SERVER_HOST: "zabbix-server"
       MYSQL_DATABASE: "zabbix"
       MYSQL_USER: "zabbix"
       MYSQL_PASSWORD: ${ZABBIX_MYSQL_PASSWORD}
