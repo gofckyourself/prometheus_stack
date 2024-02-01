@@ -120,6 +120,32 @@ services:
      - /etc/localtime:/etc/localtime:ro
     restart: always
 
+ influxdb-pfsense:
+    image: "influxdb:1.8.3-alpine"
+    container_name: influxdb
+    hostname: influxdb
+    mem_limit: 10gb
+    ports:
+      - "2003:2003"
+      - "8086:8086"
+    environment:
+      TZ: "America/New_York"
+      INFLUXDB_DATA_QUERY_LOG_ENABLED: "false"
+      INFLUXDB_REPORTING_DISABLED: "true"
+      INFLUXDB_HTTP_AUTH_ENABLED: "true"
+      INFLUXDB_ADMIN_USER: "admin"
+      INFLUXDB_ADMIN_PASSWORD: "adminpassword"
+      INFLUXDB_USER: "pfsense"
+      INFLUXDB_USER_PASSWORD: "pfsenseuserpassword"
+      INFLUXDB_DB: "pfsense"
+    volumes:
+      - './influxdb/pfsense:/var/lib/influxdb'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100M"
+    networks:
+      - default
 
 
 networks:
