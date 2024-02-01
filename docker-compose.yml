@@ -120,7 +120,7 @@ services:
      - /etc/localtime:/etc/localtime:ro
     restart: always
 
- influxdb-pfsense:
+  influxdb-pfsense:
     image: "influxdb:1.8.3-alpine"
     container_name: influxdb
     hostname: influxdb
