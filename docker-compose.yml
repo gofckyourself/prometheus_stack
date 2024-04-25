@@ -138,6 +138,7 @@ services:
     restart: always
     ports:
       - 8081:8080
+      - 2003:2003
     networks:
       - default
 
