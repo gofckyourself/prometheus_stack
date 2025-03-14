@@ -59,7 +59,7 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/your-username/prometheus_stack.git
+git clone https://github.com/gofckyourself/prometheus_stack.git
 cd prometheus_stack
 ```
 
@@ -67,9 +67,8 @@ cd prometheus_stack
 ```bash
 cp env-template .env
 ```
-Не используйте .env для паролей в продакшн, воспользуйтесь безопасными способами хранения, например docker secret
 
-3. Отредактируйте файл `.env`, установив необходимые параметры
+3. Отредактируйте файл `.env`, установив необходимые параметры. Не используйте .env для паролей в продакшн, воспользуйтесь безопасными способами хранения, например docker secret
 
 ### Запуск
 
