@@ -1,7 +1,9 @@
+version: '3.9'
+
 services:
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.33.5
     volumes:
       - ./prometheus:/etc/prometheus/
     container_name: prometheus
@@ -12,12 +14,12 @@ services:
       - 9090:9090
     restart: unless-stopped
     environment:
-      TZ: "Europe/Moscow"
+      TZ: ${TZ}
     networks:
       - default
 
   node-exporter:
-    image: prom/node-exporter
+    image: prom/node-exporter:v1.3.1
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -33,12 +35,12 @@ services:
       - 9100:9100
     restart: unless-stopped
     environment:
-      TZ: "Europe/Moscow"
+      TZ: ${TZ}
     networks:
       - default
-  
+
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:8.5.2
     user: root
     depends_on:
       - prometheus
@@ -51,39 +53,39 @@ services:
     hostname: grafana
     restart: unless-stopped
     environment:
-      TZ: "Europe/Moscow"
+      TZ: ${TZ}
     networks:
       - default
 
   zabbix-server:
-    image: zabbix/zabbix-server-mysql:latest
+    image: zabbix/zabbix-server-mysql:ubuntu-7.0.10
     container_name: zabbix-server
     depends_on:
-     - mysql
+      - mysql
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
       DB_SERVER_HOST: "mysql"
       MYSQL_DATABASE: "zabbix"
       MYSQL_USER: "zabbix"
       MYSQL_PASSWORD: ${ZABBIX_MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${ZABBIX_MYSQL_PASSWORD_ROOT}
     ports:
-     - "10051:10051"
+      - "10051:10051"
     volumes:
-     - /etc/localtime:/etc/localtime:ro
+      - /etc/localtime:/etc/localtime:ro
     user: root
     networks:
       - default
     restart: always
-  
+
   zabbix-web:
-    image: zabbix/zabbix-web-nginx-mysql:latest
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-7.0.10
     container_name: zabbix-web
     depends_on:
-     - mysql
-     - zabbix-server
+      - mysql
+      - zabbix-server
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
       DB_SERVER_HOST: "mysql"
       ZBX_SERVER_HOST: "zabbix-server"
       MYSQL_DATABASE: "zabbix"
@@ -91,22 +93,21 @@ services:
       MYSQL_PASSWORD: ${ZABBIX_MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${ZABBIX_MYSQL_PASSWORD_ROOT}  
     volumes:
-     - ./zabbix/graphfont.ttf:/usr/share/zabbix/fonts/graphfont.ttf
-     - /etc/localtime:/etc/localtime:ro
-    
+      - ./zabbix/graphfont.ttf:/usr/share/zabbix/fonts/graphfont.ttf
+      - /etc/localtime:/etc/localtime:ro
     ports:
-     - "8080:8080"
+      - "8080:8080"
     user: root
     networks:
       - default
     restart: always 
 
   mysql:
-    image: mysql:latest
+    image: mysql:8.4.4
     container_name: zabbix-mysql
     command: --character-set-server=utf8 --collation-server=utf8_general_ci
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
       MYSQL_DATABASE: "zabbix"
       MYSQL_USER: "zabbix"
       MYSQL_PASSWORD: ${ZABBIX_MYSQL_PASSWORD}
@@ -114,12 +115,12 @@ services:
     networks:
       - default
     volumes:
-     - ./zabbix/database/mysql:/var/lib/mysql
-     - /etc/localtime:/etc/localtime:ro
+      - ./zabbix/database/mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
     restart: always
 
   influxdb:
-    image: influxdb
+    image: influxdb:1.8.10
     container_name: influxdb_container
     restart: always
     ports:
@@ -129,9 +130,9 @@ services:
       - ./influxdb:/var/lib/influxdb
     networks:
       - default
- 
+
   graphite:
-    image: graphiteapp/graphite-statsd
+    image: graphiteapp/graphite-statsd:1.1.8-3
     container_name: graphite
     restart: always
     ports:
@@ -139,7 +140,6 @@ services:
       - 2003:2003
     networks:
       - default
-
 
 networks:
   default:

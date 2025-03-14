@@ -1,2 +1,3 @@
 ZABBIX_MYSQL_PASSWORD=your_zabbix_password
 ZABBIX_MYSQL_PASSWORD_ROOT=your_root_password
+TZ="Europe/Moscow"
